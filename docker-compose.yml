@@ -47,7 +47,7 @@ services:
       - gamma-db
       - redis
     volumes:
-      - ./mock.json:/mock/mock.json
+      - ./mock/mock.json:/mock/mock.json
     ports:
       - 8081:8081
 
@@ -55,3 +55,33 @@ services:
     image: redis:5.0
     networks:
       - gamma
+
+  # LDAP ============================
+
+  ldap:
+    image: osixia/openldap:1.4.0
+    environment:
+      #admin username: cn=admin,dc=chalmers,dc=it
+      #admin password: password
+
+      LDAP_ORGANISATION: "Chalmers IT"
+      LDAP_DOMAIN: "chalmers.it"
+      LDAP_BASE_DN: "dc=chalmers,dc=it"
+      LDAP_ADMIN_PASSWORD: "password"
+      LDAP_SEED_INTERNAL_LDIF_PATH: /ldif
+      LDAP_SEED_INTERNAL_SCHEMA_PATH: /schemas
+    volumes:
+      - ./mock/ldif:/ldif
+      - ./mock/schemas:/schemas
+    ports:
+      - 389:389
+      - 636:636
+
+  ldap-admin:
+    image: osixia/phpldapadmin:0.9.0
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: ldap
+    depends_on:
+      - ldap
+    ports:
+      - 6443:443

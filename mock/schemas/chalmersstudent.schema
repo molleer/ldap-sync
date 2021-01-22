@@ -1,0 +1,60 @@
+# chalmersstudent.schema - LDAP schema that supplies admission year, 
+# nollan-picture etc
+#
+# Written by Eda (digIT14) in August 2014, revised in October 2014
+#
+# OID: 5.5.5.5.5.5.1337.1.1
+#
+
+attributetype ( 5.5.5.5.5.5.1337.1.1.1
+   NAME 'nickname'
+   DESC 'Accepted nickname'
+   EQUALITY caseIgnoreMatch
+   SUBSTR caseIgnoreSubstringsMatch
+   SYNTAX  1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 5.5.5.5.5.5.1337.1.1.2
+   NAME 'admissionYear'
+   DESC 'The year the student where admitted to chalmers'
+   EQUALITY numericStringMatch
+   SUBSTR numericStringSubstringsMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.36 )
+
+attributeType ( 5.5.5.5.5.5.1337.1.1.3
+   NAME 'acceptedUserAgreement'
+   DESC 'Whether or not the user has accepted the user agreement'
+   EQUALITY booleanMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.7
+   SINGLE-VALUE )
+
+attributetype ( 5.5.5.5.5.5.1337.1.1.5
+   NAME 'pushService'
+   DESC 'Store a push notification service in the format of: "service-name;device;api-key"'
+   EQUALITY caseIgnoreMatch
+   SUBSTR caseIgnoreSubstringsMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 5.5.5.5.5.5.1337.1.1.6
+   NAME 'avatar'
+   DESC 'Avatar/photo path'
+   EQUALITY caseIgnoreIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( 5.5.5.5.5.5.1337.1.1.7
+   NAME 'nollanPhoto'
+   DESC 'Path to the nollan photo'
+   EQUALITY caseIgnoreIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+objectclass ( 5.5.5.5.5.5.1337.1.2.1
+   NAME 'chalmersstudent'
+   SUP top STRUCTURAL
+   DESC 'Chalmers (IT) Student'
+   MUST (
+        admissionYear $ acceptedUserAgreement $ nickname $ mail $
+        givenName $ sn
+    )
+   MAY  (
+        avatar $ nollanPhoto $ telephoneNumber $ description $
+        preferredLanguage $ pushService
+        ) )

@@ -1,0 +1,44 @@
+# itgroup.schema - LDAP schema that supplies displayName to groups
+#
+# Written by Eda (digIT14) in January 2015
+#
+# OID: 5.5.5.5.5.5.1338.1.1
+#
+#
+attributetype ( 5.5.5.5.5.5.1338.1.1.1
+   NAME 'homepage'
+   DESC 'The group homepage, i.e. https://digit.chalmers.it'
+   EQUALITY caseIgnoreMatch
+   SUBSTR caseIgnoreSubstringsMatch
+   SYNTAX  1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 5.5.5.5.5.5.1338.1.1.2
+   NAME 'type'
+   DESC 'Committee or society'
+   EQUALITY caseIgnoreMatch
+   SUBSTR caseIgnoreSubstringsMatch
+   SYNTAX  1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 5.5.5.5.5.5.1338.1.1.3
+   NAME 'function'
+   DESC 'The type of group: rustmästeri, sexmästeri, etc.'
+   EQUALITY caseIgnoreMatch
+   SUBSTR caseIgnoreSubstringsMatch
+   SYNTAX  1.3.6.1.4.1.1466.115.121.1.15 )
+
+attributetype ( 5.5.5.5.5.5.1338.1.1.4
+   NAME 'groupLogo'
+   DESC 'Path to the group logo.'
+   EQUALITY caseIgnoreIA5Match
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.26 )
+
+attributetype ( 5.5.5.5.5.5.1338.1.1.5
+   NAME 'position'
+   DESC 'Store a position for members in the following format: "position;cid"'
+   EQUALITY caseIgnoreMatch
+   SUBSTR caseIgnoreSubstringsMatch
+   SYNTAX 1.3.6.1.4.1.1466.115.121.1.15 )
+
+objectclass ( 5.5.5.5.5.5.1338.1.2.1 NAME 'itGroup' SUP top AUXILIARY
+   MUST ( displayName $ description )
+   MAY ( groupLogo $ mail $ homepage $ type $ function $ position ) )
