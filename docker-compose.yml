@@ -46,6 +46,8 @@ services:
     depends_on:
       - gamma-db
       - redis
+    volumes:
+      - ./mock.json:/mock/mock.json
     ports:
       - 8081:8081
 
