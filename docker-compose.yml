@@ -68,7 +68,7 @@ services:
       LDAP_ORGANISATION: "digIT"
       LDAP_DOMAIN: "chalmers.it"
       LDAP_BASE_DN: "dc=chalmers,dc=it"
-      LDAP_ADMIN_PASSWORD: "password"
+      LDAP_ADMIN_PASSWORD: "passwor"
       LDAP_SEED_INTERNAL_LDIF_PATH: /ldif
       LDAP_SEED_INTERNAL_SCHEMA_PATH: /schemas
       LDAP_TLS_VERIFY_CLIENT: try
