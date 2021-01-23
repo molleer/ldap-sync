@@ -1,0 +1,38 @@
+[gamma.producer]
+    apiKey = "key"
+    url = "http://localhost:8080"
+
+[ldap]
+	url = "localhost:636"
+	servername = "ldap.chalmers.it"
+	user = "cn=admin,dc=chalmers,dc=it"
+	password = "password"
+	tls = false # must he true in production
+	custom = ["fkit", "kit"]
+
+[ldap.groups]
+	basedn = "ou=groups,dc=mydomain,dc=ex"
+	filter = "(|(objectClass=itGroup)(objectClass=itPosition))"
+	attibutes = ["cn", "displayName", "mail", "member"]
+
+[ldap.users]
+	basedn = "ou=people,dc=mydomain,dc=ex"
+	filter = "(&(objectClass=chalmersstudent))"
+	attibutes = ["uid", "mail"]
+
+#### CUSTOM FILTERS ####
+[ldap.fkit]
+    mail = "fkit@mydomain.ex"
+	basedn = "ou=fkit,ou=groups,dc=mydomain,dc=ex"
+	filter = "(&(objectClass=itGroup))"
+    parent_filter = "(&(ou=%childRDN%))"
+	attibutes = ["cn", "displayName", "mail"]
+
+
+[ldap.kit]
+    mail = "kit@mydomain.ex"
+	basedn = "ou=fkit,ou=groups,dc=mydomain,dc=ex"
+	filter = "(&(objectClass=itGroup)(type=Committee))"
+    parent_filter = "(&(ou=%childRDN%))"
+	attibutes = ["cn", "displayName", "mail"]
+#### ============== ####

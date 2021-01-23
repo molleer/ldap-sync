@@ -60,16 +60,18 @@ services:
 
   ldap:
     image: osixia/openldap:1.4.0
+    hostname: ldap.chalmers.it
     environment:
       #admin username: cn=admin,dc=chalmers,dc=it
       #admin password: password
 
-      LDAP_ORGANISATION: "Chalmers IT"
+      LDAP_ORGANISATION: "digIT"
       LDAP_DOMAIN: "chalmers.it"
       LDAP_BASE_DN: "dc=chalmers,dc=it"
       LDAP_ADMIN_PASSWORD: "password"
       LDAP_SEED_INTERNAL_LDIF_PATH: /ldif
       LDAP_SEED_INTERNAL_SCHEMA_PATH: /schemas
+      LDAP_TLS_VERIFY_CLIENT: try
     volumes:
       - ./mock/ldif:/ldif
       - ./mock/schemas:/schemas
