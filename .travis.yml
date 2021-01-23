@@ -14,8 +14,8 @@ before_install:
     -e LDAP_SEED_INTERNAL_LDIF_PATH=/ldif
     -e LDAP_SEED_INTERNAL_SCHEMA_PATH=/schemas
     -e LDAP_TLS_VERIFY_CLIENT=try
-    -v ./mock/ldif:/ldif
-    -v ./mock/schemas:/schemas
+    -v "/$(pwd)/mock/ldif:/ldif"
+    -v "/$(pwd)/mock/schemas:/schemas"
     osixia/openldap:1.4.0
 
 script:
