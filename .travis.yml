@@ -1,0 +1,23 @@
+language: go
+
+services:
+  - docker
+
+before_install:
+  - docker pull osixia/openldap:1.4.0
+  - >
+    docker run -d --name ldap -p 636:636
+    -e LDAP_ORGANISATION=digIT
+    -e LDAP_DOMAIN=chalmers.it
+    -e LDAP_BASE_DN=dc=chalmers,dc=it
+    -e LDAP_ADMIN_PASSWORD=password
+    -e LDAP_SEED_INTERNAL_LDIF_PATH=/ldif
+    -e LDAP_SEED_INTERNAL_SCHEMA_PATH=/schemas
+    -e LDAP_TLS_VERIFY_CLIENT=try
+    -v "/$(pwd)/mock/ldif:/ldif"
+    -v "/$(pwd)/mock/schemas:/schemas"
+    osixia/openldap:1.4.0
+
+script:
+  - cp example.config.toml config.toml
+  - go test ./pkg/tests
