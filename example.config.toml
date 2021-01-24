@@ -6,7 +6,7 @@
 	url = "localhost:636"
 	servername = "ldap.chalmers.it"
 	user = "cn=admin,dc=chalmers,dc=it"
-	password = "passwor"
+	password = "password"
 	tls = false # must he true in production
 	custom = ["fkit", "kit"]
 
