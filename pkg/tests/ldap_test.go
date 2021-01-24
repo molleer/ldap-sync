@@ -33,6 +33,6 @@ func TestConnection(t *testing.T) {
 	assert.Equal(t, err, nil, "Failed to dial LDAP server")
 	defer l.Close()
 
-	l.Bind(loginConfig.UserName, loginConfig.Password)
+	err = l.Bind(loginConfig.UserName, loginConfig.Password)
 	assert.Equal(t, err, nil, "Failed to login as admin")
 }
