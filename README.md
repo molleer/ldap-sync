@@ -1,5 +1,7 @@
 # LDAP Sync
 
+[![Build Status](https://travis-ci.com/molleer/ldap-sync.svg?branch=master)](https://travis-ci.com/molleer/ldap-sync)
+
 Syncing legacy [LDAP](https://ldap.com/) user database with the newer user service [Gamma](https://gamma.chalmers.it)
 
 ## Why?
