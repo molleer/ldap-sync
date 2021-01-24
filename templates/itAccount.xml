@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!DOCTYPE template SYSTEM "template.dtd">
+
+<template>
+<askcontainer>0</askcontainer>
+<description>New Chalmers IT User Account</description>
+<icon>it.png</icon>
+<invalid>0</invalid>
+<rdn>uid</rdn>
+<title>Chalmers IT: User Account</title>
+<visible>1</visible>
+
+<objectClasses>
+	<objectClass id="chalmersstudent"></objectClass>
+	<objectClass id="posixAccount"></objectClass>
+	<objectClass id="shadowaccount"></objectClass>
+</objectClasses>
+
+<attributes>
+<attribute id="uid">
+	<display>CID (uid)</display>
+	<onchange>=autoFill(homeDirectory;/home/chalmersit/%uid%)</onchange>
+	<onchange>=autoFill(mail;%uid%@student.chalmers.se)</onchange>
+	<icon>ldap-uid.png</icon>
+	<order>1</order>
+	<page>1</page>
+</attribute>
+<attribute id="givenName">
+	<display>First name</display>
+    <!--<onchange>=autoFill(cn;%givenName% %sn%)</onchange>-->
+	<order>2</order>
+	<page>1</page>
+</attribute>
+<attribute id="sn">
+	<display>Last name</display>
+    <!--<onchange>=autoFill(cn;%givenName% %sn%)</onchange>-->
+	<order>3</order>
+	<page>1</page>
+</attribute>
+<attribute id="cn">
+	<display>Display format</display>
+	<readonly>0</readonly>
+	<order>4</order>
+	<page>1</page>
+    <value>%{firstname} '%{nickname}' %{lastname}</value>
+</attribute>
+<attribute id="acceptedUserAgreement">
+	<display>Accepted User Agreement</display>
+	<order>5</order>
+	<page>1</page>
+</attribute>
+<attribute id="admissionYear">
+	<display>Admission Year</display>
+	<order>6</order>
+	<page>1</page>
+</attribute>
+<attribute id="nickname">
+	<display>Nickname</display>
+	<order>7</order>
+	<page>1</page>
+</attribute>
+<attribute id="mail">
+	<display>E-mail</display>
+	<icon>mail.png</icon>
+	<order>8</order>
+	<page>1</page>
+</attribute>
+<attribute id="telephoneNumber">
+	<display>Phone</display>
+	<icon>phone.png</icon>
+	<order>9</order>
+	<page>1</page>
+</attribute>
+<attribute id="homeDirectory">
+	<display>Home directory</display>
+	<readonly>1</readonly>
+	<order>10</order>
+	<page>1</page>
+</attribute>
+<attribute id="uidNumber">
+	<display>UID Number</display>
+	<icon>terminal.png</icon>
+	<hint>test</hint>
+	<hidden>0</hidden>
+	<readonly>1</readonly>
+	<value>=php.GetNextNumber(/;uidNumber;true;;;10000)</value>
+	<order>11</order>
+	<page>1</page>
+</attribute>
+<attribute id="gidNumber">
+	<display>GID Number</display>
+	<readonly>0</readonly>
+	<hidden>0</hidden>
+	<value>100</value>
+	<order>12</order>
+	<page>1</page>
+	<!--<value><![CDATA[=php.MultiList(/;(&(objectClass=posixGroup));gidNumber;%cn%)]]></value>-->
+</attribute>
+<attribute id="loginShell">
+	<display>Login shell</display>
+	<readonly>0</readonly>
+	<order>13</order>
+	<page>1</page>
+	 <type>select</type>
+        <value id="/bin/bash">Bash</value>
+        <value id="/bin/zsh">ZSH (May not exist on all servers)</value>
+        <value id="/bin/false">No login</value>
+</attribute>
+<attribute id="userPassword">
+	<display>Password</display>
+	<helper>
+		<display>Encryption</display>
+		<default>ssha</default>
+		<id>enc</id>
+		<value id="ssha">ssha</value>
+		<value id="ssha">ssha</value>
+	</helper>
+	<icon>lock.png</icon>
+	<post>=php.PasswordEncrypt(%enc%;%userPassword%)</post>
+	<spacer>1</spacer>
+	<verify>1</verify>
+	<order>14</order>
+	<page>1</page>
+</attribute>
+<attribute id="preferredLanguage">
+	<display>Preferred language</display>
+	<readonly>0</readonly>
+	<order>15</order>
+	<page>1</page>
+	 <type>select</type>
+        <value id="sv">Swedish</value>
+        <value id="en">English</value>
+</attribute>
+<attribute id="notifyBy">
+	<display>Notify by</display>
+	<order>16</order>
+    <value>mail</value>
+	<page>1</page>
+</attribute>
+<attribute id="pushService">
+	<display>Push notification service</display>
+	<order>17</order>
+    <value></value>
+	<page>1</page>
+</attribute>
+</attributes>
+
+</template>
