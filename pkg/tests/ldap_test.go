@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"os"
 	"testing"
 
 	"github.com/magiconair/properties/assert"
@@ -9,17 +11,37 @@ import (
 	"github.com/spf13/viper"
 )
 
-func TestConnection(t *testing.T) {
+var service *services.ServiceLDAP
+
+func TestMain(m *testing.M) {
 	err := config.LoadConfig()
-	assert.Equal(t, err, nil, "Failed to load config")
+	if err != nil {
+		fmt.Println("Failed to load config")
+		panic(err)
+	}
 
-	l, err := services.LDAPConnect()
+	service, _ = services.NewLDAPService()
+	service.LoginUser(services.LoginConfig{
+		UserName: viper.GetString("ldap.user"),
+		Password: viper.GetString("ldap.password"),
+	})
+
+	os.Exit(m.Run())
+}
+
+func TestConnection(t *testing.T) {
+	l, err := services.NewLDAPService()
 	assert.Equal(t, err, nil, "Failed to dial LDAP server")
-	defer l.Close()
+	defer l.Connection.Close()
 
-	err = services.LoginUser(l, services.LoginConfig{
+	err = l.LoginUser(services.LoginConfig{
 		UserName: viper.GetString("ldap.user"),
 		Password: viper.GetString("ldap.password"),
 	})
 	assert.Equal(t, err, nil, "Failed to login as admin")
+}
+
+func TestGetUsers(t *testing.T) {
+	_, err := service.GetITUsers()
+	assert.Equal(t, err, nil, "An error ocurred when fetching user")
 }
