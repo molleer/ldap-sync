@@ -1,6 +1,6 @@
 version: 1
 
-#TOP----------------------------------------------
+# Top ----------------------------------------------
 
 # Entry 4: ou=groups,dc=chalmers,dc=it
 dn: ou=groups,dc=chalmers,dc=it
@@ -14,7 +14,7 @@ objectclass: organizationalUnit
 objectclass: top
 ou: people
 
-#GROUPS------------------------------------------
+# Super Groups ------------------------------------------
 
 # Entry 1: ou=access,ou=groups,dc=chalmers,dc=it
 dn: ou=access,ou=groups,dc=chalmers,dc=it
@@ -35,25 +35,7 @@ objectclass: organizationalUnit
 objectclass: top
 ou: posix
 
-#FKIT ------------------------------
-
-# Entry 2: ou=8bit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=8bit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: 8bit
-
-# Entry 3: ou=ama,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=ama,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: ama
-
-# Entry 4: ou=armit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=armit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: armit
+# FKIT ------------------------------
 
 # Entry 5: ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
 dn: ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
@@ -61,116 +43,103 @@ objectclass: organizationalUnit
 objectclass: top
 ou: digit
 
-# Entry 6: ou=dpo,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=dpo,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: dpo
 
-# Entry 7: ou=drawit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=drawit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
+# POSIX ------------------------------------
+ Allows access to log-files among other things
+dn: cn=adm,ou=posix,ou=groups,dc=chalmers,dc=it
+cn: adm
+description: Allows access to log-files among other things
+gidnumber: 4
+objectclass: posixGroup
 objectclass: top
-ou: drawit
 
-# Entry 8: ou=equalit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=equalit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
+# The default group
+dn: cn=itstud,ou=posix,ou=groups,dc=chalmers,dc=it
+cn: itstud
+description: The default group
+gidnumber: 4500
+objectclass: posixGroup
 objectclass: top
-ou: equalit
 
-# Entry 9: ou=fanbarerit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=fanbarerit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
+# Allows access to www files
+dn: cn=www-sites,ou=posix,ou=groups,dc=chalmers,dc=it
+cn: www-sites
+description: Allows access to www files
+gidnumber: 1099
+objectclass: posixGroup
 objectclass: top
-ou: fanbarerit
 
-# Entry 10: ou=fikit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=fikit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
+# Users ---------------------------------
+dn: uid=bill,ou=people,dc=chalmers,dc=it
+accepteduseragreement: TRUE
+admissionyear: 2001
+cn: %{firstname} '%{nickname}' %{lastname}
+gidnumber: 4500
+givenname: Bill
+homedirectory: /home/chalmersit/bill
+loginshell: /bin/bash
+mail: bill@student.chalmers.se
+nickname: Billy
+objectclass: chalmersstudent
+objectclass: posixAccount
 objectclass: top
-ou: fikit
+preferredlanguage: sv
+sn: Billysson
+telephonenumber: 07212345667
+uid: bill
+uidnumber: 10000
+userpassword: {SSHA}xeHcFuIwJ8R2JffkdS1YEgPUHzN67kvx
 
-# Entry 11: ou=flashit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=flashit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: flashit
+# Groups ------------------------------------
 
-# Entry 12: ou=fritid,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=fritid,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: fritid
-
-# Entry 13: ou=hookit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=hookit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: hookit
-
-# Entry 14: ou=kandidatmiddagen,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=kandidatmiddagen,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: kandidatmiddagen
-
-# Entry 15: ou=laggit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=laggit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: laggit
-
-# Entry 16: ou=mrcit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=mrcit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: mrcit
-
-# Entry 17: ou=nollkit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=nollkit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: nollkit
-
-# Entry 18: ou=prit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=prit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: prit
-
-# Entry 19: ou=rekryt,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=rekryt,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: rekryt
-
-# Entry 20: ou=revisorer,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=revisorer,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: revisorer
-
-# Entry 21: ou=sexit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=sexit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: sexit
-
-# Entry 22: ou=snit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=snit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: snit
-
-# Entry 23: ou=styrit,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=styrit,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: styrit
-
-# Entry 24: ou=valberedningen,ou=fkit,ou=groups,dc=chalmers,dc=it
-dn: ou=valberedningen,ou=fkit,ou=groups,dc=chalmers,dc=it
-objectclass: organizationalUnit
-objectclass: top
-ou: valberedningen
+## digIT'01 group
+#dn: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+#cn: digit01
+#description: Members of digIT 01
+#displayname: digIT 01/02
+#function: digIT stuff
+#gidnumber: 5116
+#mail: digit01@chalmers.it
+#member: uid=billy,ou=people,dc=chalmers,dc=it
+#objectclass: groupOfNames
+#objectclass: posixGroup
+#objectclass: itGroup
+#objectclass: top
+#position: Hubbenansvarig;billy
+#type: Committee
+#
+## didIT alumni group
+#dn: cn=didit,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+#cn: didit
+#description: en;All previous members of digIT
+#description: sv;Alla tidigare medlemmar av digIT
+#displayname: didIT
+#gidnumber: 5001
+#mail: didit@chalmers.it
+#member: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+#objectclass: groupOfNames
+#objectclass: posixGroup
+#objectclass: top
+#objectclass: itGroup
+#type: Alumni
+#
+## digIT group
+#dn: cn=digit,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+#cn: digit
+#description: en;Manages servers and development
+#description: se; Tar hand om tjänster och utveckling
+#displayname: digIT
+#function: en; digIT stuff
+#function: sv; digIT saker
+#gidnumber: 5000
+#homepage: https://digit.chalmers.it
+#homepage: https://www.facebook.com/digitchalmers
+#homepage: https://twitter.com/digitcth
+#homepage: https://www.github.com/cthit
+#mail: digit@chalmers.it
+#member: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+#objectclass: groupOfNames
+#objectclass: posixGroup
+#objectclass: top
+#objectclass: itGroup
+#type: Committee
