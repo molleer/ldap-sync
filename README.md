@@ -31,3 +31,8 @@ Admin access LDAP:
 
 - Login DN: `cn=admin,dc=chalmers,dc=it`
 - Password: `password`
+
+## Existing problems
+
+- A group may not be both an `prosixGroup` and `groupOfNames` `objectClass` at the same time since a group may only have ONE `structural` objectClass
+  - The solution would be to change the `prosixGroup` schema to a `auxiliary` objectClass in the `mock/ldif/cthit.ldif` file, but this has not been done
