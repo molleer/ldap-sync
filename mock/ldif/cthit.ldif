@@ -4,12 +4,14 @@ version: 1
 
 # Entry 4: ou=groups,dc=chalmers,dc=it
 dn: ou=groups,dc=chalmers,dc=it
+changetype: add
 objectclass: organizationalUnit
 objectclass: top
 ou: groups
 
 # Entry 5: ou=people,dc=chalmers,dc=it
 dn: ou=people,dc=chalmers,dc=it
+changetype: add
 objectclass: organizationalUnit
 objectclass: top
 ou: people
@@ -17,7 +19,7 @@ ou: people
 # Changing posixGroup such that a group can use both posixGroup and groupOfNames objectclass
 # Changing STRUCTURAL -> AUXILIARY
 
-# dn: cn=schema
+# dn: cn=Subschema
 # changetype: modify
 # delete: objectclasses
 # objectclasses: ( 1.3.6.1.1.1.2.2 NAME 'posixGroup' SUP top STRUCTURAL MUST ( cn $ gidNumber ) MAY ( description $ memberUid $ userPassword ))
@@ -26,18 +28,21 @@ ou: people
 
 # Entry 1: ou=access,ou=groups,dc=chalmers,dc=it
 dn: ou=access,ou=groups,dc=chalmers,dc=it
+changetype: add
 objectclass: organizationalUnit
 objectclass: top
 ou: access
 
 # Entry 2: ou=fkit,ou=groups,dc=chalmers,dc=it
 dn: ou=fkit,ou=groups,dc=chalmers,dc=it
+changetype: add
 objectclass: organizationalUnit
 objectclass: top
 ou: fkit
 
 # Entry 3: ou=posix,ou=groups,dc=chalmers,dc=it
 dn: ou=posix,ou=groups,dc=chalmers,dc=it
+changetype: add
 description: Posix-groups are defined here.
 objectclass: organizationalUnit
 objectclass: top
@@ -47,14 +52,15 @@ ou: posix
 
 # Entry 5: ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
 dn: ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+changetype: add
 objectclass: organizationalUnit
 objectclass: top
 ou: digit
 
-
 # POSIX ------------------------------------
- Allows access to log-files among other things
+# Allows access to log-files among other things
 dn: cn=adm,ou=posix,ou=groups,dc=chalmers,dc=it
+changetype: add
 cn: adm
 description: Allows access to log-files among other things
 gidnumber: 4
@@ -63,6 +69,7 @@ objectclass: top
 
 # The default group
 dn: cn=itstud,ou=posix,ou=groups,dc=chalmers,dc=it
+changetype: add
 cn: itstud
 description: The default group
 gidnumber: 4500
@@ -71,6 +78,7 @@ objectclass: top
 
 # Allows access to www files
 dn: cn=www-sites,ou=posix,ou=groups,dc=chalmers,dc=it
+changetype: add
 cn: www-sites
 description: Allows access to www files
 gidnumber: 1099
@@ -79,6 +87,7 @@ objectclass: top
 
 # Users ---------------------------------
 dn: uid=bill,ou=people,dc=chalmers,dc=it
+changetype: add
 accepteduseragreement: TRUE
 admissionyear: 2001
 cn: %{firstname} '%{nickname}' %{lastname}
@@ -100,54 +109,57 @@ userpassword: {SSHA}xeHcFuIwJ8R2JffkdS1YEgPUHzN67kvx
 
 # Groups ------------------------------------
 
-## digIT'01 group
-#dn: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
-#cn: digit01
-#description: Members of digIT 01
-#displayname: digIT 01/02
-#function: digIT stuff
-#gidnumber: 5116
-#mail: digit01@chalmers.it
-#member: uid=billy,ou=people,dc=chalmers,dc=it
-#objectclass: groupOfNames
-#objectclass: posixGroup
-#objectclass: itGroup
-#objectclass: top
-#position: Hubbenansvarig;billy
-#type: Committee
-#
-## didIT alumni group
-#dn: cn=didit,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
-#cn: didit
-#description: en;All previous members of digIT
-#description: sv;Alla tidigare medlemmar av digIT
-#displayname: didIT
-#gidnumber: 5001
-#mail: didit@chalmers.it
-#member: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
-#objectclass: groupOfNames
-#objectclass: posixGroup
-#objectclass: top
-#objectclass: itGroup
-#type: Alumni
-#
-## digIT group
-#dn: cn=digit,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
-#cn: digit
-#description: en;Manages servers and development
-#description: se; Tar hand om tjänster och utveckling
-#displayname: digIT
-#function: en; digIT stuff
-#function: sv; digIT saker
-#gidnumber: 5000
-#homepage: https://digit.chalmers.it
-#homepage: https://www.facebook.com/digitchalmers
-#homepage: https://twitter.com/digitcth
-#homepage: https://www.github.com/cthit
-#mail: digit@chalmers.it
-#member: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
-#objectclass: groupOfNames
-#objectclass: posixGroup
-#objectclass: top
-#objectclass: itGroup
-#type: Committee
+# digIT'01 group
+# dn: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+# changetype: add
+# cn: digit01
+# description: Members of digIT 01
+# displayname: digIT 01/02
+# function: digIT stuff
+# gidnumber: 5116
+# mail: digit01@chalmers.it
+# member: uid=billy,ou=people,dc=chalmers,dc=it
+# # objectclass: groupOfNames
+# objectclass: posixGroup
+# objectclass: itGroup
+# objectclass: top
+# position: Hubbenansvarig;billy
+# type: Committee
+
+# didIT alumni group
+# dn: cn=didit,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+# changetype: add
+# cn: didit
+# description: en;All previous members of digIT
+# description: sv;Alla tidigare medlemmar av digIT
+# displayname: didIT
+# gidnumber: 5001
+# mail: didit@chalmers.it
+# member: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+# # objectclass: groupOfNames
+# objectclass: posixGroup
+# objectclass: top
+# objectclass: itGroup
+# type: Alumni
+
+# digIT group
+# dn: cn=digit,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+# changetype: add
+# cn: digit
+# description: en;Manages servers and development
+# description: se; Tar hand om tjänster och utveckling
+# displayname: digIT
+# function: en; digIT stuff
+# function: sv; digIT saker
+# gidnumber: 5000
+# homepage: https://digit.chalmers.it
+# homepage: https://www.facebook.com/digitchalmers
+# homepage: https://twitter.com/digitcth
+# homepage: https://www.github.com/cthit
+# mail: digit@chalmers.it
+# member: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+# # objectclass: groupOfNames
+# objectclass: posixGroup
+# objectclass: top
+# objectclass: itGroup
+# type: Committee

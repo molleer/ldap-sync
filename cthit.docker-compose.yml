@@ -1,0 +1,11 @@
+version: "3.1"
+services:
+  cthit-ldap-admin:
+    build:
+      context: ./
+      dockerfile: ldap-admin.Dockerfile
+    environment:
+      PHPLDAPADMIN_LDAP_HOSTS: "#PYTHON2BASH:{'ldap.chalmers.it':[{'login':[{'auth_type':'session'},{'bind_id':'uid=davidm,ou=people,dc=chalmers,dc=it'}]}]}"
+      PHPLDAPADMIN_HTTPS: "false"
+    ports:
+      - 8080:80
