@@ -5,10 +5,10 @@ import (
 	"os"
 	"testing"
 
-	"github.com/magiconair/properties/assert"
 	"github.com/molleer/ldap-sync/pkg/config"
 	"github.com/molleer/ldap-sync/pkg/services"
 	"github.com/spf13/viper"
+	"github.com/stretchr/testify/assert"
 )
 
 var service *services.ServiceLDAP
