@@ -110,21 +110,21 @@ userpassword: {SSHA}xeHcFuIwJ8R2JffkdS1YEgPUHzN67kvx
 # Groups ------------------------------------
 
 # digIT'01 group
-# dn: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
-# changetype: add
-# cn: digit01
-# description: Members of digIT 01
-# displayname: digIT 01/02
-# function: digIT stuff
+dn: cn=digit01,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it
+changetype: add
+cn: digit01
+description: Members of digIT 01
+displayname: digIT 01/02
+function: digIT stuff
 # gidnumber: 5116
-# mail: digit01@chalmers.it
-# member: uid=billy,ou=people,dc=chalmers,dc=it
-# # objectclass: groupOfNames
+mail: digit01@chalmers.it
+member: uid=bill,ou=people,dc=chalmers,dc=it
+objectclass: groupOfNames
 # objectclass: posixGroup
-# objectclass: itGroup
-# objectclass: top
-# position: Hubbenansvarig;billy
-# type: Committee
+objectclass: itGroup
+objectclass: top
+position: Hubbenansvarig;billy
+type: commitee
 
 # didIT alumni group
 # dn: cn=didit,ou=digit,ou=fkit,ou=groups,dc=chalmers,dc=it

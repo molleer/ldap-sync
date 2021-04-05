@@ -13,7 +13,7 @@
 
 <objectClasses>
 	<objectClass id="groupOfNames"></objectClass>
-	<objectClass id="posixGroup"></objectClass>
+	<!--<objectClass id="posixGroup"></objectClass>-->
 	<objectClass id="itgroup"></objectClass>
 </objectClasses>
 
