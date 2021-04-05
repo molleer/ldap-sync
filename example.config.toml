@@ -16,7 +16,7 @@
 	attibutes = ["cn", "displayName", "mail", "member"]
 
 [ldap.users]
-	basedn = "ou=people,dc=mydomain,dc=ex"
+	basedn = "ou=people,dc=chalmers,dc=it"
 	filter = "(&(objectClass=chalmersstudent))"
 	attibutes = ["uid", "mail"]
 
