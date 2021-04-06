@@ -9,9 +9,10 @@
 	password = "password"
 	tls = false # must he true in production
 	custom = ["fkit", "kit"]
+	basedn = "dc=chalmers,dc=it"
 
 [ldap.groups]
-	basedn = "ou=groups,dc=mydomain,dc=ex"
+	basedn = "ou=groups,dc=chalmers,dc=it"
 	filter = "(|(objectClass=itGroup)(objectClass=itPosition))"
 	attibutes = ["cn", "displayName", "mail", "member"]
 
@@ -23,15 +24,15 @@
 #### CUSTOM FILTERS ####
 [ldap.fkit]
     mail = "fkit@mydomain.ex"
-	basedn = "ou=fkit,ou=groups,dc=mydomain,dc=ex"
+	basedn = "ou=fkit,ou=groups,dc=chalmers,dc=it"
 	filter = "(&(objectClass=itGroup))"
     parent_filter = "(&(ou=%childRDN%))"
 	attibutes = ["cn", "displayName", "mail"]
 
 
 [ldap.kit]
-    mail = "kit@mydomain.ex"
-	basedn = "ou=fkit,ou=groups,dc=mydomain,dc=ex"
+    mail = "kit@chalmers.it"
+	basedn = "ou=fkit,ou=groups,dc=chalmers,dc=it"
 	filter = "(&(objectClass=itGroup)(type=Committee))"
     parent_filter = "(&(ou=%childRDN%))"
 	attibutes = ["cn", "displayName", "mail"]

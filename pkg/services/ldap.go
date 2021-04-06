@@ -3,7 +3,6 @@ package services
 import (
 	"crypto/tls"
 	"fmt"
-	"math/rand"
 	"strconv"
 
 	"github.com/spf13/viper"
@@ -20,6 +19,7 @@ type ServiceLDAP struct {
 type ServerConfig struct {
 	Url        string
 	ServerName string
+	BaseDN     string
 }
 
 type EntryConfig struct {
@@ -40,6 +40,7 @@ func NewLDAPService() (*ServiceLDAP, error) {
 	dbConfig := ServerConfig{
 		Url:        viper.GetString("ldap.url"),
 		ServerName: viper.GetString("ldap.servername"),
+		BaseDN:     viper.GetString("ldap.basedn"),
 	}
 
 	groupsConfig := EntryConfig{
@@ -116,40 +117,32 @@ func (s *ServiceLDAP) GetITUsers() ([]ITUser, error) {
 	return itUsers, nil
 }
 
-func RandomString(n int) string {
-	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")
+func (s *ServiceLDAP) NextUid() (int, error) {
+	request := ldap.NewSearchRequest(
+		s.UsersConfig.BaseDN,
+		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+		s.UsersConfig.Filter,
+		[]string{"uidNumber"},
+		nil,
+	)
 
-	s := make([]rune, n)
-	for i := range s {
-		s[i] = letters[rand.Intn(len(letters))]
+	users, err := s.Connection.Search(request)
+	if err != nil {
+		return -1, err
 	}
-	return string(s)
+
+	maxUid := -1
+	for _, entry := range users.Entries {
+		uidNumber, _ := strconv.Atoi(entry.GetAttributeValue("uidNumber"))
+		if uidNumber > maxUid {
+			maxUid = uidNumber
+		}
+	}
+
+	return maxUid + 1, nil
 }
 
-func (s *ServiceLDAP) AddITUser(user ITUser) error {
-	/*
-		dn: uid=bill,ou=people,dc=chalmers,dc=it
-		changetype: add
-		accepteduseragreement: TRUE
-		admissionyear: 2001
-		cn: %{firstname} '%{nickname}' %{lastname}
-		gidnumber: 4500
-		givenname: Bill
-		homedirectory: /home/chalmersit/bill
-		loginshell: /bin/bash
-		mail: bill@student.chalmers.se
-		nickname: Billy
-		objectclass: chalmersstudent
-		objectclass: posixAccount
-		objectclass: top
-		preferredlanguage: sv
-		sn: Billysson
-		telephonenumber: 07212345667
-		uid: bill
-		uidnumber: 10000
-		userpassword: {SSHA}xeHcFuIwJ8R2JffkdS1YEgPUHzN67kvx
-	*/
-
+func (s *ServiceLDAP) AddITUser(user ITUser, uidNumber int) error {
 	gdpr := ""
 	if user.Gdpr {
 		gdpr = "TRUE"
@@ -173,46 +166,14 @@ func (s *ServiceLDAP) AddITUser(user ITUser) error {
 			{Type: "sn", Vals: []string{user.LastName}},
 			{Type: "telephonenumber", Vals: []string{user.Phone}},
 			{Type: "uid", Vals: []string{user.Cid}},
-			{Type: "uidnumber", Vals: []string{"10010"}},
-			{Type: "userpassword", Vals: []string{fmt.Sprintf("{SSHA}%s", RandomString(20))}},
+			{Type: "uidnumber", Vals: []string{fmt.Sprintf("%v", uidNumber)}},
+			{Type: "userpassword", Vals: []string{fmt.Sprintf("{SSHA}%s", RandomString(30))}},
 		},
 	})
+}
 
-	/*request := ldap.NewSearchRequest(
-		s.UsersConfig.BaseDN,
-		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		s.UsersConfig.Filter,
-		[]string{"uid", "givenName", "sn", "acceptedUserAgreement", "admissionYear",
-			"nickname", "mail", "telephoneNumber", "preferredLanguage"},
-		nil,
-	)
-
-	users, err := s.Connection.Search(request)
-	if err != nil {
-		return nil, err
-	}
-
-	itUsers := []ITUser{}
-	for _, entry := range users.Entries {
-		userAgreement, _ := strconv.ParseBool(entry.GetAttributeValue("acceptedUserAgreement"))
-		admissionYear, _ := strconv.Atoi(entry.GetAttributeValue("admissionYear"))
-		itUsers = append(itUsers, ITUser{
-			Cid:                   entry.GetAttributeValue("uid"),
-			FirstName:             entry.GetAttributeValue("givenName"),
-			LastName:              entry.GetAttributeValue("sn"),
-			UserAgreement:         userAgreement,
-			AcceptanceYear:        admissionYear,
-			Nick:                  entry.GetAttributeValue("nickname"),
-			Email:                 entry.GetAttributeValue("mail"),
-			Phone:                 entry.GetAttributeValue("telephoneNumber"),
-			Language:              entry.GetAttributeValue("preferredLanguage"),
-			AccountLocked:         false,
-			Activated:             true,
-			Enabled:               true,
-			AccountNonLocked:      true,
-			CredentialsNonExpired: true,
-		})
-	}
-
-	return itUsers, nil*/
+func (s *ServiceLDAP) DeleteUser(cid string) error {
+	return s.Connection.Del(
+		ldap.NewDelRequest(fmt.Sprintf("uid=%s,%s", cid, s.UsersConfig.BaseDN),
+			nil))
 }

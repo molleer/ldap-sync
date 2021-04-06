@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	"os"
 	"testing"
 
@@ -46,8 +47,16 @@ func TestGetUsers(t *testing.T) {
 	assert.NoError(t, err, "An error ocurred when fetching user")
 }
 
+func TestNextUid(t *testing.T) {
+	uid, err := service.NextUid()
+	assert.NoError(t, err, "An error accured while fetching next uidNumber")
+	log.Printf("Next uid: %v\n", uid)
+}
+
 func TestAddUer(t *testing.T) {
-	err := service.AddITUser(services.ITUser{
+	uid, err := service.NextUid()
+	assert.NoError(t, err, "Cound not get next uidNumber when adding new user")
+	err = service.AddITUser(services.ITUser{
 		Cid:            "wmacmak",
 		Gdpr:           true,
 		AcceptanceYear: 2002,
@@ -56,6 +65,11 @@ func TestAddUer(t *testing.T) {
 		LastName:       "MacMakin",
 		Nick:           "Chokladkaka",
 		Phone:          "123456789",
-	})
+	}, uid)
 	assert.NoError(t, err, "An error ocurred when adding users")
+}
+
+func TestDeleteUser(t *testing.T) {
+	err := service.DeleteUser("wmacmak")
+	assert.NoError(t, err, "An error accured when deleting a user")
 }
