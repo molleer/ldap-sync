@@ -73,8 +73,3 @@ func TestDeleteUser(t *testing.T) {
 	err := service.DeleteUser("wmacmak")
 	assert.NoError(t, err, "An error accured when deleting a user")
 }
-
-func TestDeleteUser2(t *testing.T) {
-	err := service.DeleteUser("wmacmak")
-	assert.NoError(t, err, "An error accured when deleting a user")
-}

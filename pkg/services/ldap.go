@@ -2,6 +2,7 @@ package services
 
 import (
 	"crypto/tls"
+	"errors"
 	"fmt"
 	"strconv"
 
@@ -77,6 +78,33 @@ func (s *ServiceLDAP) LoginUser(config LoginConfig) error {
 	return s.Connection.Bind(config.UserName, config.Password)
 }
 
+func (s *ServiceLDAP) NextUid() (int, error) {
+	request := ldap.NewSearchRequest(
+		s.UsersConfig.BaseDN,
+		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+		s.UsersConfig.Filter,
+		[]string{"uidNumber"},
+		nil,
+	)
+
+	users, err := s.Connection.Search(request)
+	if err != nil {
+		return -1, err
+	}
+
+	maxUid := -1
+	for _, entry := range users.Entries {
+		uidNumber, _ := strconv.Atoi(entry.GetAttributeValue("uidNumber"))
+		if uidNumber > maxUid {
+			maxUid = uidNumber
+		}
+	}
+
+	return maxUid + 1, nil
+}
+
+// CRUD User =========================================
+
 func (s *ServiceLDAP) GetITUsers() ([]ITUser, error) {
 	request := ldap.NewSearchRequest(
 		s.UsersConfig.BaseDN,
@@ -117,31 +145,6 @@ func (s *ServiceLDAP) GetITUsers() ([]ITUser, error) {
 	return itUsers, nil
 }
 
-func (s *ServiceLDAP) NextUid() (int, error) {
-	request := ldap.NewSearchRequest(
-		s.UsersConfig.BaseDN,
-		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		s.UsersConfig.Filter,
-		[]string{"uidNumber"},
-		nil,
-	)
-
-	users, err := s.Connection.Search(request)
-	if err != nil {
-		return -1, err
-	}
-
-	maxUid := -1
-	for _, entry := range users.Entries {
-		uidNumber, _ := strconv.Atoi(entry.GetAttributeValue("uidNumber"))
-		if uidNumber > maxUid {
-			maxUid = uidNumber
-		}
-	}
-
-	return maxUid + 1, nil
-}
-
 func (s *ServiceLDAP) AddITUser(user ITUser, uidNumber int) error {
 	gdpr := ""
 	if user.Gdpr {
@@ -176,4 +179,58 @@ func (s *ServiceLDAP) DeleteUser(cid string) error {
 	return s.Connection.Del(
 		ldap.NewDelRequest(fmt.Sprintf("uid=%s,%s", cid, s.UsersConfig.BaseDN),
 			nil))
+}
+
+func (s *ServiceLDAP) GetITUser(cid string) error {
+	//TODO
+	return errors.New("Not yet implemented")
+}
+
+func (s *ServiceLDAP) UpdateUser(user ITUser) error {
+	//TODO
+	return errors.New("Not yet implemented")
+}
+
+// CRUD Group =========================================
+
+func (s *ServiceLDAP) AddGroup(group FKITGroup) error {
+	//TODO
+	return errors.New("Not yet implemented")
+}
+
+func (s *ServiceLDAP) GetGroups() ([]FKITGroup, error) {
+	//TODO
+	return nil, errors.New("Not yet implemented")
+}
+
+func (s *ServiceLDAP) GetGroup(groupName string) (FKITGroup, error) {
+	//TODO
+	return FKITGroup{}, errors.New("Not yet implemented")
+}
+
+func (s *ServiceLDAP) DeleteGroup(name string) error {
+	//TODO
+	return errors.New("Not yet implemented")
+}
+
+// CRUD Super Group ==============================================
+
+func (s *ServiceLDAP) AddSuperGroup(group FKITSuperGroup) error {
+	//TODO
+	return errors.New("Not yet implemented")
+}
+
+func (s *ServiceLDAP) GetSuperGroups() ([]FKITSuperGroup, error) {
+	//TODO
+	return nil, errors.New("Not yet implemented")
+}
+
+func (s *ServiceLDAP) GetSuperGroup(superGroupName string) (FKITSuperGroup, error) {
+	//TODO
+	return FKITSuperGroup{}, errors.New("Not yet implemented")
+}
+
+func (s *ServiceLDAP) DeleteSuperGroup(superGroupName string) error {
+	//TODO
+	return errors.New("Not yet implemented")
 }
