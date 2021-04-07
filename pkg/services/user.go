@@ -153,9 +153,22 @@ func (s *ServiceLDAP) DeleteUser(cid string) error {
 			nil))
 }
 
-func (s *ServiceLDAP) GetITUser(cid string) error {
-	//TODO
-	return errors.New("Not yet implemented")
+func (s *ServiceLDAP) GetITUser(cid string) (ITUser, error) {
+	request := ldap.NewSearchRequest(
+		s.UsersConfig.BaseDN,
+		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+		fmt.Sprintf("(uid=%s)", cid),
+		[]string{"uid", "givenName", "sn", "acceptedUserAgreement", "admissionYear",
+			"nickname", "mail", "telephoneNumber", "preferredLanguage"},
+		nil,
+	)
+
+	user, err := s.Connection.Search(request)
+	if err != nil {
+		return ITUser{}, err
+	}
+
+	return NewUser(user.Entries[0]), nil
 }
 
 func (s *ServiceLDAP) UpdateUser(user ITUser) error {

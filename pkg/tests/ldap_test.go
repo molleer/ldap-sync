@@ -13,6 +13,16 @@ import (
 )
 
 var service *services.ServiceLDAP
+var dummyUser = services.ITUser{
+	Cid:            "wmacmak",
+	Gdpr:           true,
+	AcceptanceYear: 2002,
+	FirstName:      "Wyatt",
+	Email:          "wmacmak@student.chalmers.se",
+	LastName:       "MacMakin",
+	Nick:           "Chokladkaka",
+	Phone:          "123456789",
+}
 
 func TestMain(m *testing.M) {
 	err := config.LoadConfig()
@@ -53,23 +63,20 @@ func TestNextUid(t *testing.T) {
 	log.Printf("Next uid: %v\n", uid)
 }
 
-func TestAddUer(t *testing.T) {
+func TestAddUser(t *testing.T) {
 	uid, err := service.NextUid()
 	assert.NoError(t, err, "Cound not get next uidNumber when adding new user")
-	err = service.AddITUser(services.ITUser{
-		Cid:            "wmacmak",
-		Gdpr:           true,
-		AcceptanceYear: 2002,
-		FirstName:      "Wyatt",
-		Email:          "wmacmak@student.chalmers.se",
-		LastName:       "MacMakin",
-		Nick:           "Chokladkaka",
-		Phone:          "123456789",
-	}, uid)
+	err = service.AddITUser(dummyUser, uid)
 	assert.NoError(t, err, "An error ocurred when adding users")
 }
 
+func TestGetUser(t *testing.T) {
+	user, err := service.GetITUser(dummyUser.Cid)
+	assert.NoError(t, err, "An error accured while fetching user")
+	assert.Equal(t, dummyUser.Email, user.Email, "The wrong user was fetched")
+}
+
 func TestDeleteUser(t *testing.T) {
-	err := service.DeleteUser("wmacmak")
+	err := service.DeleteUser(dummyUser.Cid)
 	assert.NoError(t, err, "An error accured when deleting a user")
 }
