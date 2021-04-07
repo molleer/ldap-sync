@@ -159,6 +159,7 @@ func (s *ServiceLDAP) DeleteUser(cid string) error {
 		ldap.NewDelRequest(fmt.Sprintf("uid=%s,%s", cid, s.UsersConfig.BaseDN),
 			nil))
 }
+
 func (s *ServiceLDAP) getUser(cid string) (*ldap.Entry, error) {
 	request := ldap.NewSearchRequest(
 		s.UsersConfig.BaseDN,

@@ -23,6 +23,30 @@ var dummyUser = services.ITUser{
 	Nick:           "Chokladkaka",
 	Phone:          "123456789",
 }
+var dummySuperGroup = services.FKITSuperGroup{
+	Name: "digit",
+	Type: "COMMITTEE",
+}
+var dummyGroup = services.FKITGroup{
+	Name: "digit02",
+	Description: services.SvEn{
+		Sv: "digIT saker",
+	},
+	PrettyName: "digIT 02/03",
+	Function: services.SvEn{
+		Sv: "Att inte implodera",
+	},
+	Email: "digit02@chalmers.it",
+	GroupMembers: []services.FKITUser{
+		{
+			Cid: dummyUser.Cid,
+			Post: services.Post{
+				Sv: "Hubbenansvarig",
+			},
+		},
+	},
+	SuperGroup: dummySuperGroup,
+}
 
 func TestMain(m *testing.M) {
 	err := config.LoadConfig()
@@ -83,6 +107,16 @@ func TestUpdateUser(t *testing.T) {
 	user, err := service.GetITUser(newDummy.Cid)
 	assert.NoError(t, err, "An error accured when fetching updated user")
 	assert.Equal(t, newDummy.Email, user.Email, "The user email was not updated")
+}
+
+func TestAddGroup(t *testing.T) {
+	err := service.AddGroup(dummyGroup)
+	assert.NoError(t, err, "An error occured when adding new group")
+}
+
+func TestDeleteGroup(t *testing.T) {
+	err := service.DeleteGroup(dummyGroup.Name, dummyGroup.SuperGroup.Name)
+	assert.NoError(t, err, "An error occured while deleting group")
 }
 
 func TestDeleteUser(t *testing.T) {
