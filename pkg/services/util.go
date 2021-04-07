@@ -1,6 +1,8 @@
 package services
 
-import "math/rand"
+import (
+	"math/rand"
+)
 
 func RandomString(n int) string {
 	var letters = []rune("abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789")

@@ -2,13 +2,22 @@ package services
 
 import (
 	"crypto/tls"
-	"errors"
-	"fmt"
 	"strconv"
 
 	"github.com/spf13/viper"
 	"gopkg.in/ldap.v2"
 )
+
+type LdapConfig struct {
+	Url        string
+	ServerName string
+	Tls        bool
+}
+
+type LoginConfig struct {
+	UserName string
+	Password string
+}
 
 type ServiceLDAP struct {
 	Connection   *ldap.Conn
@@ -101,136 +110,4 @@ func (s *ServiceLDAP) NextUid() (int, error) {
 	}
 
 	return maxUid + 1, nil
-}
-
-// CRUD User =========================================
-
-func (s *ServiceLDAP) GetITUsers() ([]ITUser, error) {
-	request := ldap.NewSearchRequest(
-		s.UsersConfig.BaseDN,
-		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
-		s.UsersConfig.Filter,
-		[]string{"uid", "givenName", "sn", "acceptedUserAgreement", "admissionYear",
-			"nickname", "mail", "telephoneNumber", "preferredLanguage"},
-		nil,
-	)
-
-	users, err := s.Connection.Search(request)
-	if err != nil {
-		return nil, err
-	}
-
-	itUsers := []ITUser{}
-	for _, entry := range users.Entries {
-		userAgreement, _ := strconv.ParseBool(entry.GetAttributeValue("acceptedUserAgreement"))
-		admissionYear, _ := strconv.Atoi(entry.GetAttributeValue("admissionYear"))
-		itUsers = append(itUsers, ITUser{
-			Cid:                   entry.GetAttributeValue("uid"),
-			FirstName:             entry.GetAttributeValue("givenName"),
-			LastName:              entry.GetAttributeValue("sn"),
-			UserAgreement:         userAgreement,
-			AcceptanceYear:        admissionYear,
-			Nick:                  entry.GetAttributeValue("nickname"),
-			Email:                 entry.GetAttributeValue("mail"),
-			Phone:                 entry.GetAttributeValue("telephoneNumber"),
-			Language:              entry.GetAttributeValue("preferredLanguage"),
-			AccountLocked:         false,
-			Activated:             true,
-			Enabled:               true,
-			AccountNonLocked:      true,
-			CredentialsNonExpired: true,
-		})
-	}
-
-	return itUsers, nil
-}
-
-func (s *ServiceLDAP) AddITUser(user ITUser, uidNumber int) error {
-	gdpr := ""
-	if user.Gdpr {
-		gdpr = "TRUE"
-	} else {
-		gdpr = "FALSE"
-	}
-
-	return s.Connection.Add(&ldap.AddRequest{
-		DN: fmt.Sprintf("uid=%s,%s", user.Cid, s.UsersConfig.BaseDN),
-		Attributes: []ldap.Attribute{
-			{Type: "accepteduseragreement", Vals: []string{gdpr}},
-			{Type: "admissionyear", Vals: []string{strconv.FormatInt(int64(user.AcceptanceYear), 10)}},
-			{Type: "cn", Vals: []string{"%{firstname} '%{nickname}' %{lastname}"}},
-			{Type: "gidnumber", Vals: []string{"4500"}},
-			{Type: "givenname", Vals: []string{user.FirstName}},
-			{Type: "homedirectory", Vals: []string{fmt.Sprintf("/home/chalmersit/%s", user.Cid)}},
-			{Type: "loginshell", Vals: []string{"/bin/bash"}},
-			{Type: "mail", Vals: []string{user.Email}},
-			{Type: "nickname", Vals: []string{user.Nick}},
-			{Type: "objectclass", Vals: []string{"chalmersstudent", "posixAccount", "top"}},
-			{Type: "sn", Vals: []string{user.LastName}},
-			{Type: "telephonenumber", Vals: []string{user.Phone}},
-			{Type: "uid", Vals: []string{user.Cid}},
-			{Type: "uidnumber", Vals: []string{fmt.Sprintf("%v", uidNumber)}},
-			{Type: "userpassword", Vals: []string{fmt.Sprintf("{SSHA}%s", RandomString(30))}},
-		},
-	})
-}
-
-func (s *ServiceLDAP) DeleteUser(cid string) error {
-	return s.Connection.Del(
-		ldap.NewDelRequest(fmt.Sprintf("uid=%s,%s", cid, s.UsersConfig.BaseDN),
-			nil))
-}
-
-func (s *ServiceLDAP) GetITUser(cid string) error {
-	//TODO
-	return errors.New("Not yet implemented")
-}
-
-func (s *ServiceLDAP) UpdateUser(user ITUser) error {
-	//TODO
-	return errors.New("Not yet implemented")
-}
-
-// CRUD Group =========================================
-
-func (s *ServiceLDAP) AddGroup(group FKITGroup) error {
-	//TODO
-	return errors.New("Not yet implemented")
-}
-
-func (s *ServiceLDAP) GetGroups() ([]FKITGroup, error) {
-	//TODO
-	return nil, errors.New("Not yet implemented")
-}
-
-func (s *ServiceLDAP) GetGroup(groupName string) (FKITGroup, error) {
-	//TODO
-	return FKITGroup{}, errors.New("Not yet implemented")
-}
-
-func (s *ServiceLDAP) DeleteGroup(name string) error {
-	//TODO
-	return errors.New("Not yet implemented")
-}
-
-// CRUD Super Group ==============================================
-
-func (s *ServiceLDAP) AddSuperGroup(group FKITSuperGroup) error {
-	//TODO
-	return errors.New("Not yet implemented")
-}
-
-func (s *ServiceLDAP) GetSuperGroups() ([]FKITSuperGroup, error) {
-	//TODO
-	return nil, errors.New("Not yet implemented")
-}
-
-func (s *ServiceLDAP) GetSuperGroup(superGroupName string) (FKITSuperGroup, error) {
-	//TODO
-	return FKITSuperGroup{}, errors.New("Not yet implemented")
-}
-
-func (s *ServiceLDAP) DeleteSuperGroup(superGroupName string) error {
-	//TODO
-	return errors.New("Not yet implemented")
 }
