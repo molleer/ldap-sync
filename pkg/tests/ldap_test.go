@@ -76,6 +76,15 @@ func TestGetUser(t *testing.T) {
 	assert.Equal(t, dummyUser.Email, user.Email, "The wrong user was fetched")
 }
 
+func TestUpdateUser(t *testing.T) {
+	newDummy := dummyUser
+	newDummy.Email = "hello@chalmers.it"
+	assert.NoError(t, service.UpdateUser(newDummy), "An error occured when updating user")
+	user, err := service.GetITUser(newDummy.Cid)
+	assert.NoError(t, err, "An error accured when fetching updated user")
+	assert.Equal(t, newDummy.Email, user.Email, "The user email was not updated")
+}
+
 func TestDeleteUser(t *testing.T) {
 	err := service.DeleteUser(dummyUser.Cid)
 	assert.NoError(t, err, "An error accured when deleting a user")

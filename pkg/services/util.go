@@ -2,6 +2,8 @@ package services
 
 import (
 	"math/rand"
+
+	"gopkg.in/ldap.v2"
 )
 
 func RandomString(n int) string {
@@ -12,4 +14,13 @@ func RandomString(n int) string {
 		s[i] = letters[rand.Intn(len(letters))]
 	}
 	return string(s)
+}
+
+func ToPartial(attribs []ldap.Attribute) []ldap.PartialAttribute {
+	res := make([]ldap.PartialAttribute, len(attribs))
+	for i := 0; i < len(attribs); i++ {
+		res[i].Type = attribs[i].Type
+		res[i].Vals = attribs[i].Vals
+	}
+	return res
 }

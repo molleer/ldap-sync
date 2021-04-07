@@ -1,7 +1,6 @@
 package services
 
 import (
-	"errors"
 	"fmt"
 	"strconv"
 
@@ -66,7 +65,7 @@ type FKITUser struct {
 	Enabled               bool         `json:"enabled"`
 }
 
-func (user *ITUser) ToLdapEntry(uidNumber int) []ldap.Attribute {
+func (user *ITUser) ToLdapEntry(uidNumber int, genPassword bool) []ldap.Attribute {
 	gdpr := ""
 	if user.Gdpr {
 		gdpr = "TRUE"
@@ -74,7 +73,7 @@ func (user *ITUser) ToLdapEntry(uidNumber int) []ldap.Attribute {
 		gdpr = "FALSE"
 	}
 
-	return []ldap.Attribute{
+	attributes := []ldap.Attribute{
 		{Type: "accepteduseragreement", Vals: []string{gdpr}},
 		{Type: "admissionyear", Vals: []string{strconv.FormatInt(int64(user.AcceptanceYear), 10)}},
 		{Type: "cn", Vals: []string{"%{firstname} '%{nickname}' %{lastname}"}},
@@ -89,8 +88,16 @@ func (user *ITUser) ToLdapEntry(uidNumber int) []ldap.Attribute {
 		{Type: "telephonenumber", Vals: []string{user.Phone}},
 		{Type: "uid", Vals: []string{user.Cid}},
 		{Type: "uidnumber", Vals: []string{fmt.Sprintf("%v", uidNumber)}},
-		{Type: "userpassword", Vals: []string{fmt.Sprintf("{SSHA}%s", RandomString(30))}},
 	}
+
+	if genPassword {
+		attributes = append(attributes, ldap.Attribute{
+			Type: "userpassword",
+			Vals: []string{fmt.Sprintf("{SSHA}%s", RandomString(30))},
+		})
+	}
+
+	return attributes
 }
 
 func NewUser(entry *ldap.Entry) ITUser {
@@ -143,7 +150,7 @@ func (s *ServiceLDAP) GetITUsers() ([]ITUser, error) {
 func (s *ServiceLDAP) AddITUser(user ITUser, uidNumber int) error {
 	return s.Connection.Add(&ldap.AddRequest{
 		DN:         fmt.Sprintf("uid=%s,%s", user.Cid, s.UsersConfig.BaseDN),
-		Attributes: user.ToLdapEntry(uidNumber),
+		Attributes: user.ToLdapEntry(uidNumber, true),
 	})
 }
 
@@ -152,8 +159,7 @@ func (s *ServiceLDAP) DeleteUser(cid string) error {
 		ldap.NewDelRequest(fmt.Sprintf("uid=%s,%s", cid, s.UsersConfig.BaseDN),
 			nil))
 }
-
-func (s *ServiceLDAP) GetITUser(cid string) (ITUser, error) {
+func (s *ServiceLDAP) getUser(cid string) (*ldap.Entry, error) {
 	request := ldap.NewSearchRequest(
 		s.UsersConfig.BaseDN,
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
@@ -165,13 +171,33 @@ func (s *ServiceLDAP) GetITUser(cid string) (ITUser, error) {
 
 	user, err := s.Connection.Search(request)
 	if err != nil {
+		return nil, err
+	}
+
+	return user.Entries[0], nil
+}
+
+/**
+* Returns the user information, but not group membership
+ */
+func (s *ServiceLDAP) GetITUser(cid string) (ITUser, error) {
+	user, err := s.getUser(cid)
+	if err != nil {
 		return ITUser{}, err
 	}
 
-	return NewUser(user.Entries[0]), nil
+	return NewUser(user), nil
 }
 
 func (s *ServiceLDAP) UpdateUser(user ITUser) error {
-	//TODO
-	return errors.New("Not yet implemented")
+	ldapUser, err := s.getUser(user.Cid)
+	if err != nil {
+		return err
+	}
+	uidNumber, _ := strconv.Atoi(ldapUser.GetAttributeValue("uidNumber"))
+
+	return s.Connection.Modify(&ldap.ModifyRequest{
+		DN:                fmt.Sprintf("uid=%s,%s", user.Cid, s.UsersConfig.BaseDN),
+		ReplaceAttributes: ToPartial(user.ToLdapEntry(uidNumber, false)),
+	})
 }
