@@ -24,3 +24,13 @@ func ToPartial(attribs []ldap.Attribute) []ldap.PartialAttribute {
 	}
 	return res
 }
+
+func RemoveEmpty(attribs []ldap.Attribute) []ldap.Attribute {
+	res := make([]ldap.Attribute, 0)
+	for _, attr := range attribs {
+		if len(attr.Vals) > 0 && attr.Vals[0] != "" {
+			res = append(res, attr)
+		}
+	}
+	return res
+}
