@@ -42,7 +42,7 @@ func (s *ServiceLDAP) AddSuperGroup(superGroup FKITSuperGroup) error {
 		},
 	}
 	groupAttribs := group.ToLdapAttrib(10, "") //TODO: 10 is never used
-	groupAttribs[5].Vals = []string{fmt.Sprintf("cn=admin,%s", s.DBConfig.BaseDN)}
+	groupAttribs[5].Vals = []string{fmt.Sprintf("cn=digit,%s", s.DBConfig.BaseDN)}
 	groupAttribs = RemoveEmpty(groupAttribs)
 
 	//Adds active group to the super group directory

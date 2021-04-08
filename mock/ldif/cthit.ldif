@@ -1,5 +1,17 @@
 version: 1
 
+# Change admin to digit
+# dn: cn=admin,dc=chalmers,dc=it
+# changetype: delete
+
+dn: cn=digit,dc=chalmers,dc=it
+changetype: add
+cn: digit
+description: LDAP administrator
+objectclass: simpleSecurityObject
+objectclass: organizationalRole
+userpassword: {SSHA}Zllgm6yNzhh9qItc28jClf5FiPSOVPPZ
+
 # Top ----------------------------------------------
 
 # Entry 4: ou=groups,dc=chalmers,dc=it
@@ -23,6 +35,46 @@ ou: people
 # changetype: modify
 # delete: objectclasses
 # objectclasses: ( 1.3.6.1.1.1.2.2 NAME 'posixGroup' SUP top STRUCTURAL MUST ( cn $ gidNumber ) MAY ( description $ memberUid $ userPassword ))
+
+# Sudoers -----------------------------------------------
+
+# Entry 1: ou=SUDOers,dc=chalmers,dc=it
+dn: ou=SUDOers,dc=chalmers,dc=it
+changetype: add
+objectclass: organizationalUnit
+objectclass: top
+ou: SUDOers
+
+# Entry 2: cn=defaults,ou=SUDOers,dc=chalmers,dc=it
+# dn: cn=defaults,ou=SUDOers,dc=chalmers,dc=it
+# changetype: add
+# cn: defaults
+# objectclass: sudoRole
+# objectclass: top
+# sudooption: insults
+# sudooption: env_keep+=SSH_AUTH_SOCK
+
+# Entry 3: cn=didit,ou=SUDOers,dc=chalmers,dc=it
+# dn: cn=didit,ou=SUDOers,dc=chalmers,dc=it
+# changetype: add
+# cn: didit
+# description: Grant didIT sudo-powers
+# objectclass: sudoRole
+# objectclass: top
+# sudocommand: ALL
+# sudohost: ALL
+# sudouser: %didit
+
+# Entry 4: cn=digit,ou=SUDOers,dc=chalmers,dc=it
+# dn: cn=digit,ou=SUDOers,dc=chalmers,dc=it
+changetype: add
+# cn: digit
+# description: Grant digIT sudo-powers
+# objectclass: sudoRole
+# objectclass: top
+# sudocommand: ALL
+# sudohost: ALL
+# sudouser: %digit
 
 # Super Groups ------------------------------------------
 

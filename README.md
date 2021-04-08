@@ -36,3 +36,7 @@ Admin access LDAP:
 
 - A group may not be both an `prosixGroup` and `groupOfNames` `objectClass` at the same time since a group may only have ONE `structural` objectClass
   - The solution would be to change the `prosixGroup` schema to a `auxiliary` objectClass in the `mock/ldif/cthit.ldif` file, but this has not been done
+- Cannot add groups under `ou=SUDOers`
+  - The `sudoRole` objectclass has not been constructed (commendted out in `chalmersstudent`)
+- `cn=digit,dc=chalmers,dc=it` is not the admin account and logging in as such will not give you any access
+  - You may try it with the password: `password`
