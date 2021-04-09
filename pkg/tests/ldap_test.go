@@ -97,6 +97,20 @@ func TestAddGroup(t *testing.T) {
 	assert.NoError(t, err, "An error occured when adding new group")
 }
 
+func TestGetGroups(t *testing.T) {
+	groups, err := service.GetGroups()
+	assert.NoError(t, err, "An error occured while fetching all groups")
+	for _, g := range groups {
+		assert.NotEqual(t, dummySuperGroup.Name, g.Name, "Super group was not filtered out from normal groups")
+	}
+	for _, g := range groups {
+		if g.Name == dummyGroup.Name {
+			return
+		}
+	}
+	assert.Equal(t, 1, 0, "All groups was not fetched")
+}
+
 func TestDeleteGroup(t *testing.T) {
 	err := service.DeleteGroup(dummyGroup.Name, dummyGroup.SuperGroup.Name)
 	assert.NoError(t, err, "An error occured while deleting group")

@@ -40,3 +40,12 @@ func SplitDN(dn string) []string {
 	reg, _ := regexp.Compile("[=,]")
 	return reg.Split(dn, -1)
 }
+
+func Contains(groups []FKITSuperGroup, name string) bool {
+	for _, g := range groups {
+		if g.Name == name {
+			return true
+		}
+	}
+	return false
+}

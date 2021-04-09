@@ -96,6 +96,7 @@ func NewGroup(entry *ldap.Entry) FKITGroup {
 		},
 		Name:       entry.GetAttributeValue("cn"),
 		PrettyName: entry.GetAttributeValue("displayname"),
+		//TODO: Add this stuff
 		//SuperGroup: 	"",
 		//Active: 		"",
 		//GroupMembers: "",
@@ -112,8 +113,34 @@ func (s *ServiceLDAP) AddGroup(group FKITGroup) error {
 }
 
 func (s *ServiceLDAP) GetGroups() ([]FKITGroup, error) {
-	//TODO
-	return nil, errors.New("Not yet implemented")
+	res, err := s.Connection.Search(ldap.NewSearchRequest(
+		fmt.Sprintf("ou=fkit,%s", s.GroupsConfig.BaseDN),
+		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+		s.GroupsConfig.Filter,
+		[]string{"cn", "description", "displayname", "function",
+			"mail", "member", "objectclass", "position", "type"},
+		nil,
+	))
+
+	if err != nil {
+		return nil, err
+	}
+
+	superGroups, err := s.GetSuperGroups()
+
+	if err != nil {
+		return nil, err
+	}
+
+	groups := make([]FKITGroup, 0)
+	for _, g := range res.Entries {
+		if Contains(superGroups, g.GetAttributeValue("cn")) {
+			continue
+		}
+		groups = append(groups, NewGroup(g))
+	}
+
+	return groups, nil
 }
 
 func (s *ServiceLDAP) GetGroup(groupName string) (FKITGroup, error) {
