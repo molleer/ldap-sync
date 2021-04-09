@@ -80,6 +80,18 @@ func TestAddSuperGroup(t *testing.T) {
 	assert.NoError(t, err, "An error occured when adding new super group")
 }
 
+func TestGetSuperGroup(t *testing.T) {
+	superGroup, err := service.GetSuperGroup(dummySuperGroup.Name)
+	assert.NoError(t, err, "An error occured while fetching super group")
+	assert.Equal(t, dummySuperGroup.Email, superGroup.Email, "The wrong super group was fetched")
+}
+
+func TestGetSuperGroups(t *testing.T) {
+	superGroups, err := service.GetSuperGroups()
+	assert.NoError(t, err, "An error occured when fetching all superg groups")
+	assert.Contains(t, superGroups, dummySuperGroup, "Failed to fetch dmmy super group")
+}
+
 func TestAddGroup(t *testing.T) {
 	err := service.AddGroup(dummyGroup)
 	assert.NoError(t, err, "An error occured when adding new group")

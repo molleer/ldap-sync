@@ -2,6 +2,7 @@ package services
 
 import (
 	"math/rand"
+	"regexp"
 
 	"gopkg.in/ldap.v2"
 )
@@ -33,4 +34,9 @@ func RemoveEmpty(attribs []ldap.Attribute) []ldap.Attribute {
 		}
 	}
 	return res
+}
+
+func SplitDN(dn string) []string {
+	reg, _ := regexp.Compile("[=,]")
+	return reg.Split(dn, -1)
 }

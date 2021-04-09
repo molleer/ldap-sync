@@ -3,6 +3,7 @@ package services
 import (
 	"errors"
 	"fmt"
+	"strings"
 
 	"gopkg.in/ldap.v2"
 )
@@ -61,13 +62,54 @@ func (s *ServiceLDAP) AddSuperGroup(superGroup FKITSuperGroup) error {
 }
 
 func (s *ServiceLDAP) GetSuperGroups() ([]FKITSuperGroup, error) {
-	//TODO
-	return nil, errors.New("Not yet implemented")
+	res, err := s.Connection.Search(ldap.NewSearchRequest(
+		s.GroupsConfig.BaseDN,
+		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+		"(ou=*)",
+		[]string{"ou"},
+		nil,
+	))
+	if err != nil {
+		return nil, err
+	}
+
+	superGroups := make([]FKITSuperGroup, 0)
+
+	for _, e := range res.Entries {
+		name := SplitDN(e.DN)[1]
+		group, err := s.GetSuperGroup(name)
+		if err != nil {
+			continue
+		}
+		superGroups = append(superGroups, group)
+	}
+
+	return superGroups, nil
 }
 
 func (s *ServiceLDAP) GetSuperGroup(superGroupName string) (FKITSuperGroup, error) {
-	//TODO
-	return FKITSuperGroup{}, errors.New("Not yet implemented")
+	group, err := s.Connection.Search(ldap.NewSearchRequest(
+		fmt.Sprintf("cn=%s,ou=%s,ou=fkit,%s", superGroupName, superGroupName, s.GroupsConfig.BaseDN),
+		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+		fmt.Sprintf("(cn=%s)", superGroupName),
+		[]string{"mail", "type", "displayName"},
+		nil,
+	))
+
+	if err != nil {
+		return FKITSuperGroup{}, err
+	}
+
+	if group == nil || len(group.Entries) == 0 {
+		return FKITSuperGroup{}, errors.New(fmt.Sprintf("Failed to fins super group: %s", superGroupName))
+	}
+
+	return FKITSuperGroup{
+		Name:       superGroupName,
+		PrettyName: group.Entries[0].GetAttributeValue("displayName"),
+		Email:      group.Entries[0].GetAttributeValue("mail"),
+		Type:       strings.ToUpper(group.Entries[0].GetAttributeValue("type")),
+	}, err
 }
 
 func (s *ServiceLDAP) DeleteSuperGroup(superGroupName string) error {
