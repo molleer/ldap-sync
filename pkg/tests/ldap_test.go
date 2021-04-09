@@ -111,6 +111,12 @@ func TestGetGroups(t *testing.T) {
 	assert.Equal(t, 1, 0, "All groups was not fetched")
 }
 
+func TestGetGroup(t *testing.T) {
+	group, err := service.GetGroup(dummyGroup.Name, dummySuperGroup.Name)
+	assert.NoError(t, err, "An error occured while fetching group")
+	assert.Equal(t, dummyGroup.Email, group.Email, "Wrong group was fetched")
+}
+
 func TestDeleteGroup(t *testing.T) {
 	err := service.DeleteGroup(dummyGroup.Name, dummyGroup.SuperGroup.Name)
 	assert.NoError(t, err, "An error occured while deleting group")

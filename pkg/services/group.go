@@ -118,7 +118,7 @@ func (s *ServiceLDAP) GetGroups() ([]FKITGroup, error) {
 		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
 		s.GroupsConfig.Filter,
 		[]string{"cn", "description", "displayname", "function",
-			"mail", "member", "objectclass", "position", "type"},
+			"mail", "member", "position", "type"},
 		nil,
 	))
 
@@ -143,9 +143,26 @@ func (s *ServiceLDAP) GetGroups() ([]FKITGroup, error) {
 	return groups, nil
 }
 
-func (s *ServiceLDAP) GetGroup(groupName string) (FKITGroup, error) {
-	//TODO
-	return FKITGroup{}, errors.New("Not yet implemented")
+func (s *ServiceLDAP) GetGroup(groupName string, superGroupName string) (FKITGroup, error) {
+	res, err := s.Connection.Search(ldap.NewSearchRequest(
+		fmt.Sprintf("ou=%s,ou=fkit,%s", superGroupName, s.GroupsConfig.BaseDN),
+		ldap.ScopeWholeSubtree, ldap.NeverDerefAliases, 0, 0, false,
+		fmt.Sprintf("(cn=%s)", groupName),
+		[]string{"cn", "description", "displayname", "function",
+			"mail", "member", "position", "type"},
+		nil,
+	))
+
+	if err != nil {
+		return FKITGroup{}, err
+	}
+
+	if res == nil || len(res.Entries) == 0 {
+		return FKITGroup{}, errors.New(fmt.Sprintf(
+			"Did not find group '%s' in super group '%s'", groupName, superGroupName))
+	}
+
+	return NewGroup(res.Entries[0]), nil
 }
 
 func (s *ServiceLDAP) DeleteGroup(groupName string, superGroupName string) error {
