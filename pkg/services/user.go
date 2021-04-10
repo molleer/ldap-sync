@@ -202,3 +202,16 @@ func (s *ServiceLDAP) UpdateUser(user ITUser) error {
 		ReplaceAttributes: ToPartial(user.ToLdapEntry(uidNumber, false)),
 	})
 }
+
+func (s *ServiceLDAP) SetPassword(cid string, password string) error {
+	/*UserIdentity string
+	// OldPassword, if present, contains the user's current password
+	OldPassword string
+	// NewPassword, if present, contains the desired password for this user
+	NewPassword string*/
+	_, err := s.Connection.PasswordModify(&ldap.PasswordModifyRequest{
+		UserIdentity: fmt.Sprintf("uid=%s,%s", cid, s.UsersConfig.BaseDN),
+		NewPassword:  password,
+	})
+	return err
+}

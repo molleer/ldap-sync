@@ -75,6 +75,11 @@ func TestUpdateUser(t *testing.T) {
 	assert.Equal(t, newDummy.Email, user.Email, "The user email was not updated")
 }
 
+func TestChangeUserPassword(t *testing.T) {
+	err := service.SetPassword(dummyUser.Cid, "hello1233")
+	assert.NoError(t, err, "Failed to change user password")
+}
+
 func TestAddSuperGroup(t *testing.T) {
 	err := service.AddSuperGroup(dummySuperGroup)
 	assert.NoError(t, err, "An error occured when adding new super group")
