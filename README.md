@@ -20,17 +20,46 @@ Build dev environment
     docker-compose up
 ```
 
-When all containers are running, you can access gamma at http://localhost:3000 and phpLdapAdmin at http://localhost:8080
+When all containers are running, you can access phpLdapAdmin at http://localhost:9000
+
+Admin access LDAP:
+
+- Login DN: `cn=admin,dc=chalmers,dc=it`
+- Password: `password`
+
+### Gamma
+Run Gamma locally with the following command
+
+```
+    docker-compose -f gamma.docker-compose.yml up
+```
+
+Gamma can now be accessed via the browser at http://localhost:3000
 
 Admin access Gamma:
 
 - Username: `admin`
 - Password: `password`
 
-Admin access LDAP:
+### LDAP Production
 
+You may access the production LDAP server of the Chalmers IT student division [here](https://kamino.chalmers.it/phpldapadmin/).
+
+User access:
+- Login DN: `uid=[your cid],ou=people,dc=chalmers,dc=it`
+- Password: Your password
+
+Admin access:
 - Login DN: `cn=admin,dc=chalmers,dc=it`
-- Password: `password`
+- Password: [found here](https://youtu.be/dQw4w9WgXcQ)
+
+If the phpLdapAdmin site is down, you may run a local version with the following command
+
+```
+    docker-compose -f cthit.docker-compose.yml up
+```
+
+Your local phpLdapAdmin is now accessible in the browser at http://localhost:8080
 
 ## Existing problems
 
